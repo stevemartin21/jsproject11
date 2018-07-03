@@ -39,32 +39,41 @@ router.get('/', [mid.check],  function(req,res, next){
 	})
 })
 
-
 //POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 // Take information from a form and post to data base, make suer user doesn't exist etc...
 // post to data base 
 router.post('/', function(req,res, next){
-
+	console.log(req.body)
 	// Test for user that already exisits with email and if the search returns a user 
-	
-//  Grab informaton from the filled out forms and create a new user when the route is run
-	User.create(req.body, function(error, user){
-		// If there is an error need to create an error object and set status to 400 and return to middleware 
-		if(error){
-			let err = new Error('there was an error');
-			err.status =  400;
-			next(err)
-		}else if(!req.body.fullName || !req.body.emailAddress || !req.body.password){
-			// Validate to make sure the form has full name, email address, and password
-			res.send('You are missing some key items')
-		}else{
-			//  set the status to 201 for the response and the location header to '/'
-			console.log(user)
-			res.status(201);
-			res.location('/')
-			res.end()
-		}
-	})
+	if(!req.body.fullName || !req.body.emailAddress || !req.body.password){
+		let err = new Error('There is some missing information')
+		err.status = 400;
+		next(err)
+	}else{
+		console.log(req.body)
+			User.findOne({emailAddress:req.body.emailAddress}, function(error, user){
+				console.log(user)
+					if(user){
+						var err = new Error('There is already a user with that email')
+						err.status = 400;
+						next(err)
+					}else if(!user){
+						 //Grab informaton from the filled out forms and create a new user when the route is run
+						User.create(req.body, function(error, user){
+							// check to see if it has all of the information
+							if(error){
+								let err = new Error('there was an error with creating the user');
+								err.status =  400;
+								next(err)
+							}else{//  set the status to 201 for the response and the location header to '/'
+								console.log(user)
+								res.status(201);
+								res.json(user)		
+							}
+						})
+					}
+			});
+	}
 });
 
 module.exports = router;
