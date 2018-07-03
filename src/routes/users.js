@@ -44,6 +44,8 @@ router.get('/', [mid.check],  function(req,res, next){
 // Take information from a form and post to data base, make suer user doesn't exist etc...
 // post to data base 
 router.post('/', function(req,res, next){
+
+	// Test for user that already exisits with email and if the search returns a user 
 	
 //  Grab informaton from the filled out forms and create a new user when the route is run
 	User.create(req.body, function(error, user){

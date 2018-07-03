@@ -74,8 +74,10 @@ router.post('/', mid.check, function(req, res, next){
 			next(err)
 		}else{
 			// set status and location
-			res.json(course)
+			res.location('/');
 			res.status(201);
+			res.json(course)
+			
 			//res.location('/')
 		}
 	})
@@ -96,9 +98,10 @@ router.put('/:courseId', [mid.check], function(req, res, next){
 			next(err)
 		}
 			console.log('its been updated')
+			res.location('/:courseid')
 			//res.json(course)
 			res.status = 200;
-			res.location('/:courseid')
+			
 		
 	})
 })
@@ -111,12 +114,15 @@ router.put('/:courseId', [mid.check], function(req, res, next){
 router.post('/:courseId/reviews',[mid.check], function(req, res, next){
 
 	Review.create(req.body,  function(error, review){
+		console.log(review._id)
+		console.log(req.params.courseId)
 		if(error){
 			var err = new Error('There was an error in creating the review')
 			err.status = 400;
 			next(err)
 		}else{
-			Course.findById(req.params.courseId, { $push: { reviews: review._Id } }, function(error, course){
+			Course.findById(req.params.courseId, { $push: { reviews:  review._id} }, function(error, course){
+				console.log(course)
 				if(error){
 					// Set Errors
 					var err = new Error('There was an error adding to array')
@@ -124,8 +130,9 @@ router.post('/:courseId/reviews',[mid.check], function(req, res, next){
 					next(err)
 				}else{
 					//set back status and return to lcoation
-					res.status(200)
 					res.location('/')
+					res.status(200)
+					
 				}
 			})
 
