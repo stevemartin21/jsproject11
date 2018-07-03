@@ -33,7 +33,7 @@ router.get('/', [mid.check],  function(req,res, next){
 			// Send back the verified user
 			res.status(201);
 			res.json(
-				req.verifiedUser
+				{user: req.verifiedUser}
 				)
 		}
 	})

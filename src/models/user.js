@@ -44,10 +44,13 @@ var userSchema = new Schema({
 //////////////////////////////////////////////////////////////////////////////
 userSchema.statics.authenticate =  function(email,password, callback ){
 	// callback function logs them in or gives an error
-	User.findOne(email)
+	User.findOne({emailAddress:email})
 		.exec(function(error, user){
-			console.log('This is authenticate')
-			console.log(user)
+			//console.log('This is authenticate')
+			//console.log(user.password)
+			//console.log(password)
+
+			
 			if(error){
 				// if there is an error it will put the error in the call back funtion 
 				return callback(error)
@@ -56,15 +59,18 @@ userSchema.statics.authenticate =  function(email,password, callback ){
 					var err = new Error('There is no user with that email address, please sign up')
 					err.status = 401;
 					return callback(err);
+			}else{
+					bcrypt.compare(password, user.password, function(error, success){
+						console.log(user.password)
+						console.log(password)
+						console.log(success)
+						if(success === false ){
+							return callback(null, user)
+						}else{
+							return callback()
+						}
+					})
 			}
-			bcrypt.compare(password, user.password, function(error, success){
-
-				if(success === true ){
-					return callback(null, user)
-				}else{
-					return callback()
-				}
-			})
 		})
 }
 //////////////////////////////////////////////////////////////////////////

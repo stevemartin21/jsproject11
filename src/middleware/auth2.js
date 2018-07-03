@@ -32,9 +32,10 @@ console.log('Auth was included')
 				}else{
 					console.log('Three')
 					// returns the user 
-					console.log(user);
+					//console.log(user.emailAddress);
+					//console.log(user.password);
 					// call static metod from User Model 
-					User.authenticate(verify.name, verify.pass, function(error, user){
+					User.authenticate(user.emailAddress, user.password, function(error, user){
 						// validate if there is no user 
 						console.log(user);
 						if(error){
@@ -49,7 +50,8 @@ console.log('Auth was included')
 							next(err2)
 						}else{
 							// make user is avaialble for each middlewware
-							var verfifiedUser = user;
+							req.verifiedUser = user;
+							//console.log(verfifiedUser)
 							return next()
 						}
 					})
