@@ -44,9 +44,10 @@ var userSchema = new Schema({
 //////////////////////////////////////////////////////////////////////////////
 userSchema.statics.authenticate =  function(email,password, callback ){
 	// callback function logs them in or gives an error
-	User.findOne({email:email})
+	User.findOne(email)
 		.exec(function(error, user){
 			console.log('This is authenticate')
+			console.log(user)
 			if(error){
 				// if there is an error it will put the error in the call back funtion 
 				return callback(error)

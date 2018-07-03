@@ -20,9 +20,10 @@ console.log('Auth was included')
 	if(verify){
 		// Find the user with the email addres s
 		console.log('One')
-		User.findOne(verify.name)
+		User.findOne({emailAddress:verify.name})
 			.exec(function(error, user){
-				console.log('two')
+				//console.log('two')
+				//console.log(user)
 				if(error){
 					var err = new Error('There was an error');
 					err.status = 400
@@ -35,9 +36,10 @@ console.log('Auth was included')
 					// call static metod from User Model 
 					User.authenticate(verify.name, verify.pass, function(error, user){
 						// validate if there is no user 
+						console.log(user);
 						if(error){
 							// set error code 
-							var err = new Error('There was an error')
+							var err = new Error('There was an error on authenticate')
 							err.status = 401;
 							next(err)
 						}else if( !user){
