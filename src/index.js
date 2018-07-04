@@ -51,7 +51,6 @@ app.use(bodyParser.json());
 // setup our static route to serve files from the "public" folder
 app.use('/', express.static('public'));
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 //  import routes to the app  {user, courses }
 app.use('/api/users', users);
 app.use('/api/courses', courses);
@@ -64,7 +63,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
 // Express's global error handler
 // Send a json response 
 app.use(function(err, req, res, next) {
@@ -74,7 +72,6 @@ app.use(function(err, req, res, next) {
 	  error: err
 	});
 });
-
 // start listening on our port
 var server = app.listen(app.get('port'), function() {
   console.log('Express server is listening on port ' + server.address().port);

@@ -65,10 +65,11 @@ router.post('/', function(req,res, next){
 								let err = new Error('there was an error with creating the user');
 								err.status =  400;
 								next(err)
-							}else{//  set the status to 201 for the response and the location header to '/'
+							}else{//  set the status to 201 for the response and the location header to '/' and return no content
 								console.log(user)
+								res.location('/')
 								res.status(201);
-								res.json(user)		
+								res.json()		
 							}
 						})
 					}

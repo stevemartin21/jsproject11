@@ -9,12 +9,7 @@ var auth = require('basic-auth');
 //Functions 
 ////////////////////////////////////////////////////////////////////
 //  Need to create function and incorporate basic auth taken from the req
-
-console.log('Auth was included')
-
  function check(req, res, next){
-
-
 	var verify = auth(req);
 	//Checck to see if there is a email and password taht has come in
 	if(verify){
@@ -22,18 +17,13 @@ console.log('Auth was included')
 		console.log('One')
 		User.findOne({emailAddress:verify.name})
 			.exec(function(error, user){
-				//console.log('two')
-				//console.log(user)
+				// create error object to pass in 
 				if(error){
 					var err = new Error('There was an error');
 					err.status = 400
 					next(err);
-					
 				}else{
 					console.log('Three')
-					// returns the user 
-					//console.log(user.emailAddress);
-					//console.log(user.password);
 					// call static metod from User Model 
 					User.authenticate(user.emailAddress, user.password, function(error, user){
 						// validate if there is no user 
@@ -50,7 +40,7 @@ console.log('Auth was included')
 							next(err2)
 						}else{
 							// make user is avaialble for each middlewware
-							req.verifiedUser = user;
+							req.verifiedUser = user; // If the authenticate method returns the user, then set the user document on the request so that each following middleware function has access to it.
 							//console.log(verfifiedUser)
 							return next()
 						}

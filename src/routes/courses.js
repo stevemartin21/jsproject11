@@ -1,12 +1,10 @@
 const express = require('express');
 
 var router = express.Router();
-
 var User  = require('../models/user');
 var Course  = require('../models/course');
 var Review  = require('../models/review');
 var mid = require('../middleware/auth2');
-
 // Returns the Course "_id" and "title" properties
 // Basically done
 router.get('/', function(req, res, next){
@@ -29,12 +27,9 @@ router.get('/', function(req, res, next){
 			}
 		})
 })
-
 //  GET /api/course/:courseId 200
-
 // grab a course based on the di 
 //Almost done 
-
 router.get('/:courseId', function(req,res, next){
 // find the course based on the paramerts pupilated user and review 
 	// find the course with the given id and populate the user docuemnt and reviews docuemtn
@@ -58,70 +53,75 @@ router.get('/:courseId', function(req,res, next){
 				}
 			})
 })
-
-
 // POST /api/courses 201 - Creates a course, sets the Location header, and returns no content  ///create a coruse
 // Must authenticate
 //Creat new course// Almost done
-
 router.post('/', mid.check, function(req, res, next){
-	Course.create(req.body,  function(error, course){
-		console.log('so far so good')
-		if(error){
-			// Set error
-			var err = new Error('There was an error, ');
-			err.status = 400;
-			next(err)
-		}else{
-			// set status and location
-			res.location('/');
-			res.status(201);
-			res.json(course)
-			
-			//res.location('/')
+	console.log(req.body);
+	// Validation for the body and descript
+	if(!req.body.title || !req.body.description ){
+		var err = new Error('You are missing some important items')
+		err.status = 400;
+		next(err)
+	}
+	// validation to make sure user is authorized
+	else if(!req.verifiedUser){
+		var err = new Error('You must be authorized to create a new course silly')
+		err.status = 400;
+		next(err)
+	}else{
+		//create course 
+		Course.create(req.body,  function(error, course){
+					console.log('so far so good')
+					console.log(course)
+					if(error){
+						// Set error
+						var err = new Error('There was an error creating the course ');
+						err.status = 400;
+						next(err)
+					}else{
+						// set status and location
+						res.location('/');
+						res.status(201);
+						res.json()
+				//res.location('/')
+					}
+				})
 		}
-	})
-
 })
-
-
 //PUT /api/courses/:courseId 204 - Updates a course and returns no content
 /// Must authenticate
-
 router.put('/:courseId', [mid.check], function(req, res, next){
-	console.log(req.params.courseId)
+	console.log(req.body)
 	Course.findByIdAndUpdate(req.params.courseId, { $set: req.body }, function(error, course){
 		console.log('You got it')
 		if(error){
 			var err = new Error('There was an error, check it again')
 			err.status = 400
 			next(err)
-		}
+		}else{
 			console.log('its been updated')
-			res.location('/:courseid')
-			//res.json(course)
-			res.status = 200;
-			
-		
+			res.status(204);
+			res.json()
+		}		
 	})
 })
-
-
 // POST /api/courses/:courseId/reviews 201 - Creates a review for the specified course ID, sets the Location header to the related course, and returns no content
 // create a new review 
 // Must authenticate
 // create a review and add it to the review array on the course 
 router.post('/:courseId/reviews',[mid.check], function(req, res, next){
-
 	Review.create(req.body,  function(error, review){
-		console.log(review._id)
-		console.log(req.params.courseId)
+		//console.log(review._id)
+		//console.log(req.params.courseId)
 		if(error){
 			var err = new Error('There was an error in creating the review')
 			err.status = 400;
 			next(err)
 		}else{
-			Course.findById(req.params.courseId, { $push: { reviews:  review._id} }, function(error, course){
+			console.log(review)
+			//  find the cours and update it by pushing review that was created on to the reviews array
+			Course.findByIdAndUpdate(req.params.courseId, { $push: { reviews:review._id} }, function(error, course){
 				console.log(course)
 				if(error){
 					// Set Errors
@@ -131,16 +131,12 @@ router.post('/:courseId/reviews',[mid.check], function(req, res, next){
 				}else{
 					//set back status and return to lcoation
 					res.location('/')
-					res.status(200)
-					
+					res.status(201)
+					res.json()
 				}
-			})
-
-			// need to push the review to the array 
+			})// need to push the review to the array 
 		}
-	})
-
-	
+	})	
 })
 
 
