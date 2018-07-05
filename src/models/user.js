@@ -46,6 +46,8 @@ userSchema.statics.authenticate =  function(email,password, callback ){
 	// callback function logs them in or gives an error
 	User.findOne({emailAddress:email})
 		.exec(function(error, user){
+			console.log(password);
+			console.log(user.password)
 			if(error){
 				// if there is an error it will put the error in the call back funtion 
 				return callback(error)
@@ -55,12 +57,14 @@ userSchema.statics.authenticate =  function(email,password, callback ){
 					err.status = 401;
 					return callback(err);
 			}else{
+				console.log(password);
+				console.log(user.password);
 				// compare password and userpasswrod
 					bcrypt.compare(password, user.password, function(error, success){
-						if(success === false ){
+						if(success === true ){
 							return callback(null, user)
 						}else{
-							return callback()
+							return callback(error)
 						}
 					})
 			}
