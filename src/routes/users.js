@@ -20,23 +20,9 @@ var mid = require('../middleware/auth2');
 router.get('/', [mid.check],  function(req,res, next){
 	console.log('Check ')
 	//  Find the user that that is logged in
-	User.find({}, function(error, user){
-		//   if therw was an error and create an error object 
-		if(error){
-			var err = new Error('There was an error, no user');
-			err.status= 400;
-			next(err)
-		}else{
-			// if the user is found and create it 
-			// req.verifiedUser
-			console.log('The user was found');
-			// Send back the verified user
-			res.status(201);
-			res.json(
-				{user: req.verifiedUser}
-				)
-		}
-	})
+	res.status(201);
+	res.json({user:req.verifiedUser})
+
 })
 
 //POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
