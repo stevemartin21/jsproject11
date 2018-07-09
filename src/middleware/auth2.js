@@ -15,23 +15,11 @@ var auth = require('basic-auth');
 	//console.log(verify.pass)
 		if(verify.name && verify.pass){
 
-			//console.log('One')
-			User.findOne({emailAddress:verify.name})
-				.exec(function(error, user){
-					if(error){
-						var err = new Error('There was an error');
-						err.status = 400
-						next(err);
-					}else if(!user){
-						var err = new Error('No user was found');
-						err.status = 400
-						next(err);
-					}else{
 						// call static metod from User Model 
-						User.authenticate(user.emailAddress, verify.pass, function(error, user){
+						User.authenticate(verify.name, verify.pass, function(error, user){
 
 							// validate if there is no user 
-							//console.log(user);
+							console.log(user);
 							if(error){
 								// set error code 
 								var err = new Error('There was an error on authenticate')
@@ -49,8 +37,6 @@ var auth = require('basic-auth');
 								next()
 							}
 						})
-					}
-				})
 			}	
 		else{
 			// Find the user with the email addres s

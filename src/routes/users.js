@@ -17,7 +17,7 @@ var mid = require('../middleware/auth2');
 // after use has been found verify user password is equal to the other hashed password
 //  if everything is working then the user is returned 
 // Must Authenticate
-router.get('/', [mid.check],  function(req,res, next){
+router.get('/', mid.check,  function(req,res, next){
 	console.log('Check ')
 	//  Find the user that that is logged in
 	res.status(201);
