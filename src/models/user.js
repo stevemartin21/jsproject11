@@ -60,7 +60,7 @@ userSchema.statics.authenticate =  function(email,password, callback ){
 				console.log(user.password)
 				// compare password and userpasswrod
 					bcrypt.compare(password, user.password, function(error, success){
-						if(!success){
+						if(success=== true){
 							return callback(null, user)
 						}else{
 							return callback(error)
